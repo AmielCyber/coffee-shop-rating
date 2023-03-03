@@ -10,19 +10,19 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// User info and their favorite place vote
+// User info and their favorite coffee place
 model User {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   username String
   email String @unique
+  password String
   avatar Avatar @relation(fields: [avatarId], references: [id])
   avatarId String @db.ObjectId
-  password String
   place Place? @relation(fields: [votePlaceId], references: [id])
   votePlaceId String? @db.ObjectId
 }
 
-// Avatar used by users. Multiple useers could have the same avatar.
+// Avatar used by users. Multiple users could have the same avatar.
 model Avatar {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   name String 
@@ -30,6 +30,7 @@ model Avatar {
   user User[]
 }
 
+// Coffee shop place will keep a list of voters who voted this place as their favorite.
 model Place {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   name String
@@ -38,7 +39,7 @@ model Place {
   votes User[]
 }
 
-// Location coordinates to 
+// Location coordinates for displaying a google map modal. 
 type Coordinates {
   lat String
   lng String

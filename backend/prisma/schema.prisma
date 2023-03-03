@@ -1,0 +1,45 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// User info and their favorite place vote
+model User {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  username String
+  email String @unique
+  avatar Avatar @relation(fields: [avatarId], references: [id])
+  avatarId String @db.ObjectId
+  password String
+  place Place? @relation(fields: [votePlaceId], references: [id])
+  votePlaceId String? @db.ObjectId
+}
+
+// Avatar used by users. Multiple useers could have the same avatar.
+model Avatar {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  name String 
+  imgSource String @unique
+  user User[]
+}
+
+model Place {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+  address String
+  location Coordinates
+  votes User[]
+}
+
+// Location coordinates to 
+type Coordinates {
+  lat String
+  lng String
+}
